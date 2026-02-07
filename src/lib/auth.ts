@@ -13,21 +13,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async signIn({ user }) {
       if (!user.email) return false;
 
-      const existing = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, user.email))
-        .limit(1);
+      try {
+        const existing = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, user.email))
+          .limit(1);
 
-      if (existing.length === 0) {
-        await db.insert(users).values({
-          email: user.email,
-          name: user.name ?? null,
-          image: user.image ?? null,
-        });
+        if (existing.length === 0) {
+          await db.insert(users).values({
+            email: user.email,
+            name: user.name ?? null,
+            image: user.image ?? null,
+          });
+        }
+
+        return true;
+      } catch (error) {
+        console.error("SignIn callback error:", error);
+        return false;
       }
-
-      return true;
     },
     async session({ session }) {
       if (session.user?.email) {
