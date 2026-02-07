@@ -30,7 +30,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         return true;
       } catch (error) {
-        console.error("SignIn callback error:", error);
+        console.error("SignIn callback error:", JSON.stringify(error, Object.getOwnPropertyNames(error as object)));
+        console.error("DATABASE_URL exists:", !!process.env.DATABASE_URL);
+        console.error("DATABASE_URL prefix:", process.env.DATABASE_URL?.substring(0, 30));
         return false;
       }
     },
