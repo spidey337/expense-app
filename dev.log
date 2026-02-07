@@ -84,3 +84,73 @@ Watchpack Error (initial scan): Error: EACCES: permission denied, scandir '/'
  POST /api/expenses 201 in 704ms
  GET / 200 in 596ms
  GET /api/expenses?from=2026-01-23T16%3A00%3A00.000Z 200 in 423ms
+ GET /api/auth/session 200 in 2058ms
+ GET /api/auth/session 200 in 149ms
+ GET / 200 in 2318ms
+ ○ Compiling /api/tags ...
+ ✓ Compiled /api/tags in 4.7s (732 modules)
+ GET /api/tags 200 in 8136ms
+ GET /api/auth/session 200 in 8146ms
+ GET /api/expenses?from=2026-01-23T16%3A00%3A00.000Z 200 in 8425ms
+ ○ Compiling /expenses ...
+ ✓ Compiled /expenses in 3.1s (737 modules)
+ GET / 200 in 3771ms
+ GET /expenses 200 in 6191ms
+ GET /api/auth/session 200 in 5999ms
+ GET / 200 in 360ms
+ GET /expenses 200 in 367ms
+ GET /expenses 200 in 179ms
+ GET /expenses 200 in 175ms
+ GET /expenses 200 in 166ms
+ GET /api/expenses? 200 in 498ms
+ GET /api/auth/session 200 in 488ms
+ GET /api/auth/session 200 in 134ms
+ GET /api/auth/session 200 in 467ms
+ GET /api/auth/session 200 in 129ms
+ GET /api/auth/session 200 in 389ms
+ GET /api/auth/session 200 in 106ms
+ GET /expenses 200 in 1717ms
+ GET /api/tags 200 in 496ms
+ GET /api/auth/session 200 in 514ms
+ GET /api/expenses? 200 in 739ms
+ GET /api/auth/session 200 in 176ms
+ GET /api/auth/session 200 in 361ms
+ GET /api/auth/session 200 in 130ms
+ GET / 200 in 447ms
+ GET /api/tags 200 in 1386ms
+ GET /api/auth/session 200 in 1258ms
+ GET /api/expenses?from=2026-01-23T16%3A00%3A00.000Z 200 in 1578ms
+ GET /api/auth/session 200 in 145ms
+ GET /api/auth/session 200 in 137ms
+ GET /api/auth/session 200 in 120ms
+ GET / 200 in 446ms
+ GET /api/auth/session 200 in 428ms
+ GET /api/tags 200 in 506ms
+ GET /api/expenses?from=2026-01-23T16%3A00%3A00.000Z 200 in 605ms
+ GET /api/auth/session 200 in 133ms
+ GET /api/auth/session 200 in 789ms
+ GET /api/auth/session 200 in 113ms
+ GET /expenses 200 in 175ms
+ GET /api/expenses? 200 in 600ms
+ GET / 200 in 160ms
+ GET /api/expenses?from=2026-01-23T16%3A00%3A00.000Z 200 in 319ms
+ GET /add 200 in 205ms
+ GET / 200 in 164ms
+ GET /api/expenses?from=2026-01-23T16%3A00%3A00.000Z 200 in 459ms
+ GET /api/auth/session 200 in 470ms
+ GET /api/auth/session 200 in 175ms
+ GET / 200 in 457ms
+ GET /api/tags 200 in 1074ms
+ GET /api/auth/session 200 in 1053ms
+ GET /api/expenses?from=2026-01-23T16%3A00%3A00.000Z 200 in 1682ms
+ GET /api/auth/session 200 in 208ms
+ GET /api/auth/session 200 in 280ms
+ GET /api/auth/session 200 in 135ms
+ GET /api/auth/session 200 in 424ms
+ GET /api/auth/session 200 in 233ms
+ GET / 200 in 562ms
+ GET /api/tags 200 in 382ms
+ GET /api/auth/session 200 in 405ms
+ GET /api/expenses?from=2026-01-23T16%3A00%3A00.000Z 200 in 583ms
+ GET /api/auth/session 200 in 180ms
+[?25h

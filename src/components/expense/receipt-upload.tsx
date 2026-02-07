@@ -6,9 +6,11 @@ import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/loading";
 import { useExpenseStore } from "@/stores/expense-store";
 import { useTags } from "@/hooks/use-tags";
+import { useWittyLoader } from "@/hooks/use-witty-loader";
 
 export function ReceiptUpload() {
   const inputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
   const { data: tags } = useTags();
   const {
     receiptBase64,
@@ -19,6 +21,7 @@ export function ReceiptUpload() {
     fillFromReceipt,
     setActiveTab,
   } = useExpenseStore();
+  const wittyMessage = useWittyLoader();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -69,6 +72,7 @@ export function ReceiptUpload() {
         alert("Failed to parse receipt. Please try again or enter manually.");
       }
     };
+    e.target.value = "";
     reader.readAsDataURL(file);
   };
 
@@ -82,40 +86,48 @@ export function ReceiptUpload() {
         className="hidden"
         onChange={handleFileChange}
       />
+      <input
+        ref={galleryInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileChange}
+      />
 
       {!receiptBase64 && !isParsing && (
-        <Card
-          className="flex flex-col items-center justify-center gap-4 py-16 border-dashed border-2 cursor-pointer"
-          onClick={() => inputRef.current?.click()}
-        >
-          <div className="rounded-2xl bg-primary/10 p-4">
-            <svg className="h-10 w-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
-            </svg>
-          </div>
-          <div className="text-center">
-            <p className="text-sm font-medium text-text-primary">
-              Scan Receipt
-            </p>
-            <p className="text-xs text-text-muted mt-1">
-              Take a photo or upload an image
-            </p>
-          </div>
-        </Card>
+        <div className="grid grid-cols-2 gap-3">
+          <Card
+            className="flex flex-col items-center justify-center gap-3 py-10 border-dashed border-2 cursor-pointer"
+            onClick={() => inputRef.current?.click()}
+          >
+            <div className="rounded-2xl bg-primary/10 p-3">
+              <svg className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+              </svg>
+            </div>
+            <p className="text-sm font-medium text-text-primary">Take Photo</p>
+          </Card>
+          <Card
+            className="flex flex-col items-center justify-center gap-3 py-10 border-dashed border-2 cursor-pointer"
+            onClick={() => galleryInputRef.current?.click()}
+          >
+            <div className="rounded-2xl bg-primary/10 p-3">
+              <svg className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21zM8.25 8.625a1.125 1.125 0 100-2.25 1.125 1.125 0 000 2.25z" />
+              </svg>
+            </div>
+            <p className="text-sm font-medium text-text-primary">From Gallery</p>
+          </Card>
+        </div>
       )}
 
       {isParsing && (
         <Card className="flex flex-col items-center justify-center gap-4 py-16">
           <Spinner className="h-8 w-8" />
-          <div className="text-center">
-            <p className="text-sm font-medium text-primary">
-              Analyzing receipt...
-            </p>
-            <p className="text-xs text-text-muted mt-1">
-              AI is extracting details from your receipt
-            </p>
-          </div>
+          <p className="text-sm font-medium text-primary">
+            {wittyMessage}
+          </p>
         </Card>
       )}
 

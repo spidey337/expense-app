@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design Study A — Glassmorphism Glow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .glass {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .glass-strong {
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .bar-glow {
+      box-shadow: 0 0 12px rgba(99,102,241,0.4);
+    }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .tab-active { color: #a78bfa; border-bottom: 2px solid #a78bfa; }
+    .tab-inactive { color: #64748b; border-bottom: 2px solid transparent; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .float { animation: float 6s ease-in-out infinite; }
+  </style>
+</head>
+<body class="bg-[#07070e] text-slate-100 min-h-screen overflow-x-hidden">
+
+  <!-- Phone frame -->
+  <div class="mx-auto max-w-[430px] min-h-screen relative overflow-hidden">
+
+    <!-- Background orbs -->
+    <div class="glow-orb w-64 h-64 bg-indigo-600 top-[-60px] left-[-40px] float"></div>
+    <div class="glow-orb w-48 h-48 bg-violet-500 top-[200px] right-[-50px]" style="animation: float 8s ease-in-out infinite;"></div>
+    <div class="glow-orb w-40 h-40 bg-fuchsia-600 bottom-[100px] left-[20px]" style="animation: float 10s ease-in-out infinite;"></div>
+
+    <!-- Tab Switcher -->
+    <div class="sticky top-0 z-50 glass-strong">
+      <div class="flex">
+        <button onclick="showTab('dashboard')" id="tab-dashboard" class="flex-1 py-4 text-sm font-semibold text-center tab-active transition-all">Dashboard</button>
+        <button onclick="showTab('expenses')" id="tab-expenses" class="flex-1 py-4 text-sm font-semibold text-center tab-inactive transition-all">Expenses</button>
+      </div>
+    </div>
+
+    <!-- ==================== DASHBOARD TAB ==================== -->
+    <div id="view-dashboard" class="px-5 pt-6 pb-28 space-y-6 relative z-10">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs text-slate-500 font-medium">Welcome back</p>
+          <h1 class="text-2xl font-extrabold tracking-tight">Alex</h1>
+        </div>
+        <div class="relative">
+          <div class="h-11 w-11 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-sm font-bold shadow-lg shadow-indigo-500/20">A</div>
+          <div class="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-400 border-2 border-[#07070e]"></div>
+        </div>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="glass rounded-3xl p-4 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-indigo-500/10 rounded-full -mr-6 -mt-6"></div>
+          <p class="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">2 Weeks</p>
+          <p class="text-2xl font-extrabold mt-2 bg-gradient-to-r from-indigo-300 to-violet-300 bg-clip-text text-transparent">$1,247</p>
+          <p class="text-[10px] text-emerald-400 mt-1 font-medium">-12% vs prior</p>
+        </div>
+        <div class="glass rounded-3xl p-4 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-violet-500/10 rounded-full -mr-6 -mt-6"></div>
+          <p class="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Daily Avg</p>
+          <p class="text-2xl font-extrabold mt-2 bg-gradient-to-r from-violet-300 to-fuchsia-300 bg-clip-text text-transparent">$89</p>
+          <p class="text-[10px] text-slate-500 mt-1 font-medium">14 day period</p>
+        </div>
+      </div>
+
+      <!-- Spending Chart -->
+      <div class="glass rounded-3xl p-5 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-slate-300">Daily Spending</h3>
+          <span class="text-xs text-indigo-400 font-medium">This week</span>
+        </div>
+        <div class="flex items-end gap-1.5 h-32">
+          <!-- Bars -->
+          <div class="flex-1 flex flex-col items-center gap-1.5">
+            <div class="w-full rounded-xl bg-gradient-to-t from-indigo-600 to-indigo-400 bar-glow" style="height:45%"></div>
+            <span class="text-[9px] text-slate-500">M</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-1.5">
+            <div class="w-full rounded-xl bg-gradient-to-t from-indigo-600/60 to-indigo-400/60" style="height:70%"></div>
+            <span class="text-[9px] text-slate-500">T</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-1.5">
+            <div class="w-full rounded-xl bg-gradient-to-t from-indigo-600/60 to-indigo-400/60" style="height:30%"></div>
+            <span class="text-[9px] text-slate-500">W</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-1.5">
+            <div class="w-full rounded-xl bg-gradient-to-t from-violet-600 to-violet-400 bar-glow" style="height:90%"></div>
+            <span class="text-[9px] text-slate-500">T</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-1.5">
+            <div class="w-full rounded-xl bg-gradient-to-t from-indigo-600/60 to-indigo-400/60" style="height:55%"></div>
+            <span class="text-[9px] text-slate-500">F</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-1.5">
+            <div class="w-full rounded-xl bg-gradient-to-t from-indigo-600/60 to-indigo-400/60" style="height:80%"></div>
+            <span class="text-[9px] text-slate-500">S</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-1.5">
+            <div class="w-full rounded-xl bg-gradient-to-t from-fuchsia-600 to-fuchsia-400 bar-glow" style="height:100%"></div>
+            <span class="text-[9px] text-indigo-400 font-semibold">S</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Categories (horizontal scroll) -->
+      <div class="space-y-3">
+        <h3 class="text-sm font-semibold text-slate-300">Top Categories</h3>
+        <div class="flex gap-2.5 overflow-x-auto scrollbar-hide pb-1">
+          <div class="glass rounded-2xl px-4 py-3 flex items-center gap-2.5 shrink-0">
+            <span class="text-lg">🍔</span>
+            <div>
+              <p class="text-xs font-semibold">Food</p>
+              <p class="text-[10px] text-indigo-400 font-medium">$412</p>
+            </div>
+          </div>
+          <div class="glass rounded-2xl px-4 py-3 flex items-center gap-2.5 shrink-0">
+            <span class="text-lg">🚗</span>
+            <div>
+              <p class="text-xs font-semibold">Transport</p>
+              <p class="text-[10px] text-violet-400 font-medium">$289</p>
+            </div>
+          </div>
+          <div class="glass rounded-2xl px-4 py-3 flex items-center gap-2.5 shrink-0">
+            <span class="text-lg">🛒</span>
+            <div>
+              <p class="text-xs font-semibold">Groceries</p>
+              <p class="text-[10px] text-fuchsia-400 font-medium">$198</p>
+            </div>
+          </div>
+          <div class="glass rounded-2xl px-4 py-3 flex items-center gap-2.5 shrink-0">
+            <span class="text-lg">🎮</span>
+            <div>
+              <p class="text-xs font-semibold">Entertainment</p>
+              <p class="text-[10px] text-pink-400 font-medium">$156</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Expenses -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-slate-300">Recent</h3>
+          <button class="text-xs text-indigo-400 font-medium">View all</button>
+        </div>
+        <div class="space-y-2.5">
+          <!-- Item 1 -->
+          <div class="glass rounded-2xl p-4 flex items-center gap-3">
+            <div class="h-10 w-10 rounded-2xl bg-orange-500/15 flex items-center justify-center text-base shrink-0">🍔</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate">Burger King</p>
+              <p class="text-[10px] text-slate-500">Today, 2:30 PM</p>
+            </div>
+            <p class="text-sm font-bold text-slate-200">-$12.50</p>
+          </div>
+          <!-- Item 2 -->
+          <div class="glass rounded-2xl p-4 flex items-center gap-3">
+            <div class="h-10 w-10 rounded-2xl bg-blue-500/15 flex items-center justify-center text-base shrink-0">🚗</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate">Uber Ride</p>
+              <p class="text-[10px] text-slate-500">Today, 10:15 AM</p>
+            </div>
+            <p class="text-sm font-bold text-slate-200">-$24.00</p>
+          </div>
+          <!-- Item 3 -->
+          <div class="glass rounded-2xl p-4 flex items-center gap-3">
+            <div class="h-10 w-10 rounded-2xl bg-emerald-500/15 flex items-center justify-center text-base shrink-0">🛒</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate">Whole Foods Market</p>
+              <p class="text-[10px] text-slate-500">Yesterday, 6:45 PM</p>
+            </div>
+            <p class="text-sm font-bold text-slate-200">-$67.30</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== EXPENSES TAB ==================== -->
+    <div id="view-expenses" class="px-5 pt-6 pb-28 space-y-5 relative z-10 hidden">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-extrabold tracking-tight">Expenses</h1>
+        <div class="glass rounded-2xl px-3 py-1.5">
+          <span class="text-xs font-semibold bg-gradient-to-r from-indigo-300 to-violet-300 bg-clip-text text-transparent">$1,247 total</span>
+        </div>
+      </div>
+
+      <!-- Search bar -->
+      <div class="glass rounded-2xl px-4 py-3 flex items-center gap-3">
+        <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <span class="text-sm text-slate-500">Search expenses...</span>
+      </div>
+
+      <!-- Filter pills -->
+      <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+        <button class="shrink-0 px-4 py-2 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-xs font-semibold text-indigo-300 transition-all">All</button>
+        <button class="shrink-0 px-4 py-2 rounded-full glass text-xs font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center gap-1.5">
+          <span>🍔</span> Food
+        </button>
+        <button class="shrink-0 px-4 py-2 rounded-full glass text-xs font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center gap-1.5">
+          <span>🚗</span> Transport
+        </button>
+        <button class="shrink-0 px-4 py-2 rounded-full glass text-xs font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center gap-1.5">
+          <span>🛒</span> Groceries
+        </button>
+        <button class="shrink-0 px-4 py-2 rounded-full glass text-xs font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center gap-1.5">
+          <span>🎮</span> Fun
+        </button>
+        <button class="shrink-0 px-4 py-2 rounded-full glass text-xs font-medium text-slate-400 hover:text-slate-200 transition-all flex items-center gap-1.5">
+          <span>💊</span> Health
+        </button>
+      </div>
+
+      <!-- Date group -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Today</p>
+          <p class="text-xs text-slate-600">$36.50</p>
+        </div>
+        <div class="space-y-2">
+          <div class="glass rounded-2xl p-4 flex items-center gap-3.5">
+            <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-600/10 flex items-center justify-center text-lg shrink-0">🍔</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate">Burger King</p>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-300 font-medium">Food</span>
+                <span class="text-[10px] text-slate-600">2:30 PM</span>
+              </div>
+            </div>
+            <p class="text-sm font-bold">$12.50</p>
+          </div>
+          <div class="glass rounded-2xl p-4 flex items-center gap-3.5">
+            <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center text-lg shrink-0">🚗</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate">Uber Ride</p>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 font-medium">Transport</span>
+                <span class="text-[10px] text-slate-600">10:15 AM</span>
+              </div>
+            </div>
+            <p class="text-sm font-bold">$24.00</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Yesterday group -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Yesterday</p>
+          <p class="text-xs text-slate-600">$156.80</p>
+        </div>
+        <div class="space-y-2">
+          <div class="glass rounded-2xl p-4 flex items-center gap-3.5">
+            <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 flex items-center justify-center text-lg shrink-0">🛒</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate">Whole Foods Market</p>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 font-medium">Groceries</span>
+                <span class="text-[10px] text-slate-600">6:45 PM</span>
+              </div>
+            </div>
+            <p class="text-sm font-bold">$67.30</p>
+          </div>
+          <div class="glass rounded-2xl p-4 flex items-center gap-3.5">
+            <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-600/10 flex items-center justify-center text-lg shrink-0">🎮</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate">Steam Games</p>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 font-medium">Entertainment</span>
+                <span class="text-[10px] text-slate-600">3:20 PM</span>
+              </div>
+            </div>
+            <p class="text-sm font-bold">$29.99</p>
+          </div>
+          <div class="glass rounded-2xl p-4 flex items-center gap-3.5">
+            <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-pink-500/20 to-pink-600/10 flex items-center justify-center text-lg shrink-0">☕</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate">Starbucks</p>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-300 font-medium">Food</span>
+                <span class="text-[10px] text-slate-600">8:00 AM</span>
+              </div>
+            </div>
+            <p class="text-sm font-bold">$6.75</p>
+          </div>
+          <div class="glass rounded-2xl p-4 flex items-center gap-3.5">
+            <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-cyan-600/10 flex items-center justify-center text-lg shrink-0">💊</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate">CVS Pharmacy</p>
+              <div class="flex items-center gap-1.5 mt-0.5">
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 font-medium">Health</span>
+                <span class="text-[10px] text-slate-600">11:30 AM</span>
+              </div>
+            </div>
+            <p class="text-sm font-bold">$52.76</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 glass-strong border-t border-white/5">
+      <div class="flex items-center justify-around px-4 py-2">
+        <button class="flex flex-col items-center gap-1 py-1 min-w-[60px] text-indigo-400">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+          <span class="text-[10px] font-medium">Home</span>
+        </button>
+        <button class="flex items-center justify-center -mt-6">
+          <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-xl shadow-indigo-500/30">
+            <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+          </div>
+        </button>
+        <button class="flex flex-col items-center gap-1 py-1 min-w-[60px] text-slate-500">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span class="text-[10px] font-medium">History</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <script>
+    function showTab(tab) {
+      document.getElementById('view-dashboard').classList.toggle('hidden', tab !== 'dashboard');
+      document.getElementById('view-expenses').classList.toggle('hidden', tab !== 'expenses');
+      document.getElementById('tab-dashboard').className = `flex-1 py-4 text-sm font-semibold text-center transition-all ${tab === 'dashboard' ? 'tab-active' : 'tab-inactive'}`;
+      document.getElementById('tab-expenses').className = `flex-1 py-4 text-sm font-semibold text-center transition-all ${tab === 'expenses' ? 'tab-active' : 'tab-inactive'}`;
+    }
+  </script>
+</body>
+</html>

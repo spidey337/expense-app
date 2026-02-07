@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { TagSelector } from "./tag-selector";
 import { SubItems } from "./sub-items";
+import { PaymentMethodInput } from "./payment-method-input";
 import { useExpenseStore } from "@/stores/expense-store";
 import { useCreateExpense } from "@/hooks/use-expenses";
 import { useRouter } from "next/navigation";
@@ -16,12 +17,14 @@ export function ExpenseForm() {
     date,
     amount,
     notes,
+    paymentMethod,
     selectedTagIds,
     items,
     setStore,
     setDate,
     setAmount,
     setNotes,
+    setPaymentMethod,
     toggleTag,
     addItem,
     removeItem,
@@ -40,6 +43,7 @@ export function ExpenseForm() {
         amount,
         date: new Date(date).toISOString(),
         notes: notes.trim() || undefined,
+        paymentMethod: paymentMethod.trim() || undefined,
         tagIds: selectedTagIds,
         items: items.filter((item) => item.name.trim() && item.amount),
       });
@@ -62,7 +66,7 @@ export function ExpenseForm() {
         required
       />
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 xs:grid-cols-2 gap-3">
         <Input
           id="amount"
           label="Total Amount"
@@ -85,6 +89,8 @@ export function ExpenseForm() {
       </div>
 
       <TagSelector selectedIds={selectedTagIds} onToggle={toggleTag} />
+
+      <PaymentMethodInput value={paymentMethod} onChange={setPaymentMethod} />
 
       <SubItems
         items={items}

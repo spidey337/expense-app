@@ -1,6 +1,8 @@
 "use client";
 
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useRecentExpenses } from "@/hooks/use-expenses";
 import { SummaryCards } from "@/components/dashboard/summary-cards";
 import { SpendingChart } from "@/components/dashboard/spending-chart";
@@ -12,10 +14,17 @@ import { PageLoader } from "@/components/ui/loading";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const { data: expenses, isLoading } = useRecentExpenses();
   const { data: tags } = useTags();
 
-  if (status === "loading") return <PageLoader />;
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace("/login");
+    }
+  }, [status, router]);
+
+  if (status === "loading" || status === "unauthenticated") return <PageLoader />;
 
   // Calculate spending per tag
   const tagSpending = new Map<string, number>();
@@ -33,7 +42,7 @@ export default function DashboardPage() {
     .slice(0, 8);
 
   return (
-    <div className="space-y-6 px-4 pt-6">
+    <div className="space-y-5 xs:space-y-6 px-3 xs:px-4 pt-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -55,7 +64,7 @@ export default function DashboardPage() {
       <SummaryCards expenses={expenses} isLoading={isLoading} />
 
       {/* Spending Chart */}
-      <SpendingChart expenses={expenses} isLoading={isLoading} />
+      <SpendingChart />
 
       {/* Top Categories */}
       {sortedTagSpending.length > 0 && (

@@ -10,6 +10,7 @@ interface ExpenseFormState {
   date: string;
   amount: string;
   notes: string;
+  paymentMethod: string;
   selectedTagIds: string[];
   items: ExpenseFormItem[];
   receiptBase64: string | null;
@@ -26,6 +27,7 @@ interface ExpenseStoreState extends ExpenseFormState {
   setDate: (date: string) => void;
   setAmount: (amount: string) => void;
   setNotes: (notes: string) => void;
+  setPaymentMethod: (paymentMethod: string) => void;
   toggleTag: (tagId: string) => void;
   setSelectedTagIds: (ids: string[]) => void;
   addItem: () => void;
@@ -50,6 +52,7 @@ const initialFormState: ExpenseFormState = {
   date: new Date().toISOString().slice(0, 16),
   amount: "",
   notes: "",
+  paymentMethod: "",
   selectedTagIds: [],
   items: [{ name: "", amount: "" }],
   receiptBase64: null,
@@ -67,6 +70,7 @@ export const useExpenseStore = create<ExpenseStoreState>((set) => ({
   setDate: (date) => set({ date }),
   setAmount: (amount) => set({ amount }),
   setNotes: (notes) => set({ notes }),
+  setPaymentMethod: (paymentMethod) => set({ paymentMethod }),
 
   toggleTag: (tagId) =>
     set((state) => ({

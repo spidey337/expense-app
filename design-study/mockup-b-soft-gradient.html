@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design Study B — Soft Gradient Flow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .gradient-card {
+      background: linear-gradient(135deg, rgba(30,27,50,0.95) 0%, rgba(20,18,38,0.95) 100%);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .mesh-bg {
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(124,58,237,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(236,72,153,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 40%, rgba(99,102,241,0.06) 0%, transparent 40%);
+    }
+    .soft-shadow { box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+    .inner-glow { box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .tab-active { color: #c084fc; border-bottom: 2px solid #c084fc; }
+    .tab-inactive { color: #64748b; border-bottom: 2px solid transparent; }
+    .donut-ring { stroke-dasharray: 0 100; animation: donut-fill 1s ease forwards; }
+    @keyframes donut-fill { to { stroke-dasharray: var(--fill) 100; } }
+    .progress-bar { transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+  </style>
+</head>
+<body class="bg-[#0c0a18] text-slate-100 min-h-screen">
+
+  <div class="mx-auto max-w-[430px] min-h-screen relative mesh-bg">
+
+    <!-- Tab Switcher -->
+    <div class="sticky top-0 z-50 bg-[#0c0a18]/90 backdrop-blur-xl border-b border-white/5">
+      <div class="flex">
+        <button onclick="showTab('dashboard')" id="tab-dashboard" class="flex-1 py-4 text-sm font-semibold text-center tab-active transition-all">Dashboard</button>
+        <button onclick="showTab('expenses')" id="tab-expenses" class="flex-1 py-4 text-sm font-semibold text-center tab-inactive transition-all">Expenses</button>
+      </div>
+    </div>
+
+    <!-- ==================== DASHBOARD TAB ==================== -->
+    <div id="view-dashboard" class="px-5 pt-6 pb-28 space-y-6">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs text-slate-500 font-medium">Good evening</p>
+          <h1 class="text-2xl font-extrabold tracking-tight">Alex</h1>
+        </div>
+        <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center text-sm font-bold soft-shadow">A</div>
+      </div>
+
+      <!-- Hero Spending Card -->
+      <div class="rounded-[28px] p-5 relative overflow-hidden soft-shadow" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #c026d3 100%);">
+        <div class="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -mr-10 -mt-10"></div>
+        <div class="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-8 -mb-8"></div>
+        <p class="text-xs text-white/60 font-medium">Total Spent — 2 Weeks</p>
+        <p class="text-4xl font-extrabold mt-2 text-white">$1,247</p>
+        <div class="flex items-center gap-4 mt-4">
+          <div>
+            <p class="text-[10px] text-white/50">Daily Avg</p>
+            <p class="text-sm font-bold text-white">$89.07</p>
+          </div>
+          <div class="h-6 w-px bg-white/20"></div>
+          <div>
+            <p class="text-[10px] text-white/50">Transactions</p>
+            <p class="text-sm font-bold text-white">23</p>
+          </div>
+          <div class="h-6 w-px bg-white/20"></div>
+          <div>
+            <p class="text-[10px] text-white/50">vs Last Period</p>
+            <p class="text-sm font-bold text-emerald-300">-12%</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spending Chart -->
+      <div class="gradient-card rounded-[24px] p-5 inner-glow space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-slate-300">Spending Trend</h3>
+          <div class="flex gap-1 p-0.5 rounded-xl bg-white/5">
+            <button class="text-[10px] font-medium px-3 py-1 rounded-lg bg-violet-500/20 text-violet-300">Week</button>
+            <button class="text-[10px] font-medium px-3 py-1 rounded-lg text-slate-500">Month</button>
+          </div>
+        </div>
+        <!-- Area chart approximation -->
+        <div class="relative h-36">
+          <svg viewBox="0 0 350 120" class="w-full h-full" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#818cf8"/>
+                <stop offset="50%" stop-color="#a78bfa"/>
+                <stop offset="100%" stop-color="#e879f9"/>
+              </linearGradient>
+            </defs>
+            <!-- Area fill -->
+            <path d="M0,90 C40,75 60,60 100,50 C140,40 160,70 200,30 C240,10 280,45 350,20 L350,120 L0,120 Z" fill="url(#areaGrad)"/>
+            <!-- Line -->
+            <path d="M0,90 C40,75 60,60 100,50 C140,40 160,70 200,30 C240,10 280,45 350,20" fill="none" stroke="url(#lineGrad)" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Dot on latest point -->
+            <circle cx="350" cy="20" r="4" fill="#e879f9"/>
+            <circle cx="350" cy="20" r="8" fill="#e879f9" opacity="0.2"/>
+          </svg>
+          <!-- Labels -->
+          <div class="absolute bottom-0 left-0 right-0 flex justify-between px-1">
+            <span class="text-[9px] text-slate-600">Mon</span>
+            <span class="text-[9px] text-slate-600">Tue</span>
+            <span class="text-[9px] text-slate-600">Wed</span>
+            <span class="text-[9px] text-slate-600">Thu</span>
+            <span class="text-[9px] text-slate-600">Fri</span>
+            <span class="text-[9px] text-slate-600">Sat</span>
+            <span class="text-[9px] text-violet-400 font-semibold">Sun</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Breakdown -->
+      <div class="gradient-card rounded-[24px] p-5 inner-glow space-y-4">
+        <h3 class="text-sm font-semibold text-slate-300">Category Breakdown</h3>
+        <div class="space-y-3.5">
+          <!-- Food -->
+          <div class="flex items-center gap-3">
+            <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-orange-400/20 to-orange-500/10 flex items-center justify-center text-sm shrink-0">🍔</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-1">
+                <p class="text-xs font-semibold">Food & Dining</p>
+                <p class="text-xs font-bold text-slate-300">$412</p>
+              </div>
+              <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div class="progress-bar h-full rounded-full bg-gradient-to-r from-orange-400 to-orange-500" style="width:65%"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Transport -->
+          <div class="flex items-center gap-3">
+            <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-blue-400/20 to-blue-500/10 flex items-center justify-center text-sm shrink-0">🚗</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-1">
+                <p class="text-xs font-semibold">Transport</p>
+                <p class="text-xs font-bold text-slate-300">$289</p>
+              </div>
+              <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div class="progress-bar h-full rounded-full bg-gradient-to-r from-blue-400 to-blue-500" style="width:46%"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Groceries -->
+          <div class="flex items-center gap-3">
+            <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-emerald-400/20 to-emerald-500/10 flex items-center justify-center text-sm shrink-0">🛒</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-1">
+                <p class="text-xs font-semibold">Groceries</p>
+                <p class="text-xs font-bold text-slate-300">$198</p>
+              </div>
+              <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div class="progress-bar h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500" style="width:31%"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Entertainment -->
+          <div class="flex items-center gap-3">
+            <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-violet-400/20 to-violet-500/10 flex items-center justify-center text-sm shrink-0">🎮</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-1">
+                <p class="text-xs font-semibold">Entertainment</p>
+                <p class="text-xs font-bold text-slate-300">$156</p>
+              </div>
+              <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div class="progress-bar h-full rounded-full bg-gradient-to-r from-violet-400 to-violet-500" style="width:25%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-slate-300">Recent</h3>
+          <button class="text-xs text-violet-400 font-medium">See all</button>
+        </div>
+        <div class="space-y-2">
+          <div class="gradient-card rounded-2xl p-3.5 inner-glow flex items-center gap-3">
+            <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-orange-400/20 to-orange-500/10 flex items-center justify-center text-base shrink-0">🍔</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate">Burger King</p>
+              <p class="text-[10px] text-slate-500">Today</p>
+            </div>
+            <p class="text-sm font-bold">-$12.50</p>
+          </div>
+          <div class="gradient-card rounded-2xl p-3.5 inner-glow flex items-center gap-3">
+            <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-400/20 to-blue-500/10 flex items-center justify-center text-base shrink-0">🚗</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold truncate">Uber Ride</p>
+              <p class="text-[10px] text-slate-500">Today</p>
+            </div>
+            <p class="text-sm font-bold">-$24.00</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== EXPENSES TAB ==================== -->
+    <div id="view-expenses" class="px-5 pt-6 pb-28 space-y-5 hidden">
+
+      <!-- Header with month picker -->
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-extrabold tracking-tight">Expenses</h1>
+        <div class="flex items-center gap-2">
+          <button class="h-8 w-8 rounded-xl bg-white/5 flex items-center justify-center text-slate-500">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <span class="text-sm font-semibold text-slate-300 min-w-[80px] text-center">Feb 2026</span>
+          <button class="h-8 w-8 rounded-xl bg-white/5 flex items-center justify-center text-slate-500">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary strip -->
+      <div class="rounded-[20px] p-4 flex items-center justify-between" style="background: linear-gradient(135deg, rgba(79,70,229,0.15) 0%, rgba(192,38,211,0.1) 100%); border: 1px solid rgba(124,58,237,0.1);">
+        <div>
+          <p class="text-[10px] text-slate-500 font-medium">TOTAL SPENT</p>
+          <p class="text-lg font-extrabold bg-gradient-to-r from-violet-300 to-pink-300 bg-clip-text text-transparent">$1,247.00</p>
+        </div>
+        <div class="text-right">
+          <p class="text-[10px] text-slate-500 font-medium">23 TRANSACTIONS</p>
+          <p class="text-sm font-bold text-slate-300">$89.07/day</p>
+        </div>
+      </div>
+
+      <!-- Filter pills -->
+      <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+        <button class="shrink-0 px-4 py-2 rounded-2xl text-xs font-semibold transition-all" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: white;">All</button>
+        <button class="shrink-0 px-4 py-2 rounded-2xl gradient-card text-xs font-medium text-slate-400 flex items-center gap-1.5">
+          <span>🍔</span> Food
+        </button>
+        <button class="shrink-0 px-4 py-2 rounded-2xl gradient-card text-xs font-medium text-slate-400 flex items-center gap-1.5">
+          <span>🚗</span> Transport
+        </button>
+        <button class="shrink-0 px-4 py-2 rounded-2xl gradient-card text-xs font-medium text-slate-400 flex items-center gap-1.5">
+          <span>🛒</span> Groceries
+        </button>
+        <button class="shrink-0 px-4 py-2 rounded-2xl gradient-card text-xs font-medium text-slate-400 flex items-center gap-1.5">
+          <span>🎮</span> Fun
+        </button>
+      </div>
+
+      <!-- Expense list grouped by date -->
+      <div class="space-y-5">
+        <!-- Today -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-3">
+            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Today</p>
+            <div class="flex-1 h-px bg-white/5"></div>
+            <p class="text-[11px] font-semibold text-violet-400">$36.50</p>
+          </div>
+          <div class="gradient-card rounded-2xl inner-glow divide-y divide-white/5">
+            <div class="p-3.5 flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-orange-400/15 to-orange-500/5 flex items-center justify-center text-base shrink-0">🍔</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold truncate">Burger King</p>
+                <p class="text-[10px] text-slate-500">Food &middot; 2:30 PM</p>
+              </div>
+              <p class="text-sm font-bold">$12.50</p>
+            </div>
+            <div class="p-3.5 flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-blue-400/15 to-blue-500/5 flex items-center justify-center text-base shrink-0">🚗</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold truncate">Uber Ride</p>
+                <p class="text-[10px] text-slate-500">Transport &middot; 10:15 AM</p>
+              </div>
+              <p class="text-sm font-bold">$24.00</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Yesterday -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-3">
+            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Yesterday</p>
+            <div class="flex-1 h-px bg-white/5"></div>
+            <p class="text-[11px] font-semibold text-violet-400">$156.80</p>
+          </div>
+          <div class="gradient-card rounded-2xl inner-glow divide-y divide-white/5">
+            <div class="p-3.5 flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-400/15 to-emerald-500/5 flex items-center justify-center text-base shrink-0">🛒</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold truncate">Whole Foods Market</p>
+                <p class="text-[10px] text-slate-500">Groceries &middot; 6:45 PM</p>
+              </div>
+              <p class="text-sm font-bold">$67.30</p>
+            </div>
+            <div class="p-3.5 flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-violet-400/15 to-violet-500/5 flex items-center justify-center text-base shrink-0">🎮</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold truncate">Steam Games</p>
+                <p class="text-[10px] text-slate-500">Entertainment &middot; 3:20 PM</p>
+              </div>
+              <p class="text-sm font-bold">$29.99</p>
+            </div>
+            <div class="p-3.5 flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-pink-400/15 to-pink-500/5 flex items-center justify-center text-base shrink-0">☕</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold truncate">Starbucks</p>
+                <p class="text-[10px] text-slate-500">Food &middot; 8:00 AM</p>
+              </div>
+              <p class="text-sm font-bold">$6.75</p>
+            </div>
+            <div class="p-3.5 flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-cyan-400/15 to-cyan-500/5 flex items-center justify-center text-base shrink-0">💊</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold truncate">CVS Pharmacy</p>
+                <p class="text-[10px] text-slate-500">Health &middot; 11:30 AM</p>
+              </div>
+              <p class="text-sm font-bold">$52.76</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feb 5 -->
+        <div class="space-y-2">
+          <div class="flex items-center gap-3">
+            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Feb 5</p>
+            <div class="flex-1 h-px bg-white/5"></div>
+            <p class="text-[11px] font-semibold text-violet-400">$94.25</p>
+          </div>
+          <div class="gradient-card rounded-2xl inner-glow divide-y divide-white/5">
+            <div class="p-3.5 flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-amber-400/15 to-amber-500/5 flex items-center justify-center text-base shrink-0">⛽</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold truncate">Shell Gas Station</p>
+                <p class="text-[10px] text-slate-500">Transport &middot; 5:20 PM</p>
+              </div>
+              <p class="text-sm font-bold">$58.25</p>
+            </div>
+            <div class="p-3.5 flex items-center gap-3">
+              <div class="h-10 w-10 rounded-2xl bg-gradient-to-br from-rose-400/15 to-rose-500/5 flex items-center justify-center text-base shrink-0">🍕</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold truncate">Domino's Pizza</p>
+                <p class="text-[10px] text-slate-500">Food &middot; 7:40 PM</p>
+              </div>
+              <p class="text-sm font-bold">$36.00</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 border-t border-white/5" style="background: rgba(12,10,24,0.92); backdrop-filter: blur(20px);">
+      <div class="flex items-center justify-around px-4 py-2">
+        <button class="flex flex-col items-center gap-1 py-1 min-w-[60px] text-violet-400">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+          <span class="text-[10px] font-medium">Home</span>
+        </button>
+        <button class="flex items-center justify-center -mt-6">
+          <div class="h-14 w-14 rounded-full flex items-center justify-center shadow-xl" style="background: linear-gradient(135deg, #7c3aed 0%, #c026d3 100%); box-shadow: 0 8px 24px rgba(124,58,237,0.35);">
+            <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+          </div>
+        </button>
+        <button class="flex flex-col items-center gap-1 py-1 min-w-[60px] text-slate-500">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span class="text-[10px] font-medium">History</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <script>
+    function showTab(tab) {
+      document.getElementById('view-dashboard').classList.toggle('hidden', tab !== 'dashboard');
+      document.getElementById('view-expenses').classList.toggle('hidden', tab !== 'expenses');
+      document.getElementById('tab-dashboard').className = `flex-1 py-4 text-sm font-semibold text-center transition-all ${tab === 'dashboard' ? 'tab-active' : 'tab-inactive'}`;
+      document.getElementById('tab-expenses').className = `flex-1 py-4 text-sm font-semibold text-center transition-all ${tab === 'expenses' ? 'tab-active' : 'tab-inactive'}`;
+    }
+  </script>
+</body>
+</html>

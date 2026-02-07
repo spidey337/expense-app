@@ -13,9 +13,9 @@ interface SummaryCardsProps {
 export function SummaryCards({ expenses, isLoading }: SummaryCardsProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-3 gap-3">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Card key={i} className="space-y-2">
+      <div className="grid grid-cols-2 gap-2 xs:gap-3">
+        {Array.from({ length: 2 }).map((_, i) => (
+          <Card key={i} className="space-y-2 p-3 xs:p-4">
             <SkeletonLine className="h-3 w-16" />
             <SkeletonLine className="h-6 w-20" />
           </Card>
@@ -25,28 +25,21 @@ export function SummaryCards({ expenses, isLoading }: SummaryCardsProps) {
   }
 
   const total = expenses?.reduce((sum, e) => sum + parseFloat(e.amount), 0) ?? 0;
-  const count = expenses?.length ?? 0;
   const dailyAvg = total / 14;
 
   return (
-    <div className="grid grid-cols-3 gap-3">
-      <Card>
+    <div className="grid grid-cols-2 gap-2 xs:gap-3">
+      <Card className="p-3 xs:p-4">
         <p className="text-[10px] uppercase tracking-wider text-text-muted font-medium">
           2 Weeks
         </p>
-        <p className="text-lg font-bold mt-1">{formatCurrency(total)}</p>
+        <p className="text-base xs:text-lg font-bold mt-1">{formatCurrency(total)}</p>
       </Card>
-      <Card>
+      <Card className="p-3 xs:p-4">
         <p className="text-[10px] uppercase tracking-wider text-text-muted font-medium">
           Daily Avg
         </p>
-        <p className="text-lg font-bold mt-1">{formatCurrency(dailyAvg)}</p>
-      </Card>
-      <Card>
-        <p className="text-[10px] uppercase tracking-wider text-text-muted font-medium">
-          Transactions
-        </p>
-        <p className="text-lg font-bold mt-1">{count}</p>
+        <p className="text-base xs:text-lg font-bold mt-1">{formatCurrency(dailyAvg)}</p>
       </Card>
     </div>
   );

@@ -19,7 +19,7 @@ export default function ExpensesPage() {
     expenses?.reduce((sum, e) => sum + parseFloat(e.amount), 0) ?? 0;
 
   return (
-    <div className="px-4 pt-6 space-y-5">
+    <div className="px-3 xs:px-4 pt-6 space-y-5">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">Expenses</h1>
         {expenses && (

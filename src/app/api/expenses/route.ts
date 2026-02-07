@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { store, amount, date, notes, tagIds, items } = body;
+  const { store, amount, date, notes, paymentMethod, tagIds, items } = body;
 
   if (!store || !amount || !date) {
     return NextResponse.json(
@@ -121,6 +121,7 @@ export async function POST(req: NextRequest) {
       amount,
       date: new Date(date),
       notes: notes || null,
+      paymentMethod: paymentMethod || null,
     })
     .returning();
 

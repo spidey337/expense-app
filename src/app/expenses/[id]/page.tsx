@@ -35,7 +35,7 @@ export default function ExpenseDetailPage() {
   };
 
   return (
-    <div className="px-4 pt-6 space-y-5">
+    <div className="px-3 xs:px-4 pt-6 space-y-5">
       {/* Header with back button */}
       <div className="flex items-center gap-3">
         <button
@@ -58,7 +58,7 @@ export default function ExpenseDetailPage() {
               {formatDate(expense.date)} at {formatTime(expense.date)}
             </p>
           </div>
-          <span className="text-2xl font-bold text-primary">
+          <span className="text-xl xs:text-2xl font-bold text-primary">
             {formatCurrency(expense.amount)}
           </span>
         </div>
@@ -93,6 +93,14 @@ export default function ExpenseDetailPage() {
               </div>
             ))}
           </div>
+        </Card>
+      )}
+
+      {/* Payment Method */}
+      {expense.paymentMethod && (
+        <Card className="space-y-2">
+          <h3 className="text-sm font-medium text-text-secondary">Payment Method</h3>
+          <p className="text-sm text-text-primary">{expense.paymentMethod}</p>
         </Card>
       )}
 

@@ -44,6 +44,7 @@ export const expenses = pgTable("expenses", {
   date: timestamp("date").notNull(),
   receiptUrl: text("receipt_url"),
   notes: text("notes"),
+  paymentMethod: text("payment_method"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

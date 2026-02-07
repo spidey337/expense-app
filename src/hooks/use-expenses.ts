@@ -7,6 +7,7 @@ export interface ExpenseWithDetails {
   date: string;
   receiptUrl: string | null;
   notes: string | null;
+  paymentMethod: string | null;
   createdAt: string;
   items: { id: string; name: string; amount: string }[];
   tags: { id: string; name: string; color: string; icon: string }[];
@@ -17,6 +18,7 @@ interface CreateExpensePayload {
   amount: string;
   date: string;
   notes?: string;
+  paymentMethod?: string;
   tagIds: string[];
   items: { name: string; amount: string }[];
 }
