@@ -1,0 +1,86 @@
+=== Setting up run directory ===
+Installing dependencies...
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+
+added 170 packages, and audited 171 packages in 9s
+
+38 packages are looking for funding
+  run `npm fund` for details
+
+5 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+=== Starting dev server ===
+   Using cached swc package @next/swc-wasm-nodejs...
+   ▲ Next.js 15.5.12
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.39:3000
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 2.3s
+ ○ Compiling /login ...
+ ✓ Compiled /login in 5s (710 modules)
+ GET /login 200 in 5540ms
+ ○ Compiling / ...
+ ✓ Compiled / in 862ms (735 modules)
+ GET / 200 in 1176ms
+ ○ Compiling /add ...
+ ✓ Compiled /add in 687ms (746 modules)
+ GET /add 200 in 910ms
+ ✓ Compiled /expenses in 311ms (753 modules)
+ GET /expenses 200 in 498ms
+ ○ Compiling /api/tags ...
+ ✓ Compiled /api/tags in 762ms (881 modules)
+ GET /api/tags 200 in 1826ms
+ GET / 200 in 1820ms
+ ○ Compiling /api/auth/[...nextauth] ...
+Watchpack Error (watcher): Error: EACCES: permission denied, watch '/data/data'
+Watchpack Error (watcher): Error: EACCES: permission denied, watch '/data'
+Watchpack Error (watcher): Error: EACCES: permission denied, watch '/'
+Watchpack Error (initial scan): Error: EACCES: permission denied, scandir '/data/data'
+Watchpack Error (initial scan): Error: EACCES: permission denied, scandir '/data'
+Watchpack Error (initial scan): Error: EACCES: permission denied, scandir '/'
+ ✓ Compiled /api/auth/[...nextauth] in 10.2s (1040 modules)
+ GET /api/expenses?from=2026-01-23T16%3A00%3A00.000Z 401 in 12268ms
+ GET /api/tags 200 in 13962ms
+ GET /api/auth/session 200 in 13917ms
+ GET /login 200 in 9981ms
+ GET /api/auth/session 200 in 266ms
+ GET /api/auth/session 200 in 73ms
+ GET /api/auth/providers 200 in 265ms
+ GET /api/auth/csrf 200 in 62ms
+ POST /api/auth/signin/google? 200 in 334ms
+ GET /api/auth/callback/google?code=4%2F0ASc3gC2IYX5hQTCxuPX2f-EAw1ljh1H9igTlhxp-O-FSh8hJDBPeraBxpIFoqy0A_jii_A&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=2&prompt=consent 302 in 1228ms
+ GET / 200 in 517ms
+ GET /api/tags 200 in 262ms
+ GET /api/auth/session 200 in 257ms
+ GET /api/expenses?from=2026-01-23T16%3A00%3A00.000Z 200 in 595ms
+ GET /api/auth/session 200 in 326ms
+ GET /add 200 in 261ms
+ GET / 200 in 144ms
+ GET /add 200 in 140ms
+ GET /api/auth/session 200 in 475ms
+ GET /api/auth/session 200 in 122ms
+ GET /api/auth/session 200 in 452ms
+ GET /api/auth/session 200 in 123ms
+ POST /api/expenses 201 in 465ms
+ GET / 200 in 161ms
+ GET /api/expenses?from=2026-01-23T16%3A00%3A00.000Z 200 in 402ms
+ GET /add 200 in 118ms
+ GET /api/auth/session 200 in 474ms
+ GET /api/auth/session 200 in 119ms
+ ○ Compiling /api/parse-receipt ...
+ GET /api/auth/session 200 in 1553ms
+ ✓ Compiled /api/parse-receipt in 10.8s (1177 modules)
+ GET /api/auth/session 200 in 12194ms
+ POST /api/parse-receipt 200 in 25310ms
+ POST /api/expenses 201 in 704ms
+ GET / 200 in 596ms
+ GET /api/expenses?from=2026-01-23T16%3A00%3A00.000Z 200 in 423ms
