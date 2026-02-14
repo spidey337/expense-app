@@ -16,12 +16,56 @@ export function ReceiptUpload() {
     receiptBase64,
     receiptMimeType,
     isParsing,
+    parseError,
     setReceipt,
     setIsParsing,
+    setParseError,
     fillFromReceipt,
     setActiveTab,
   } = useExpenseStore();
   const wittyMessage = useWittyLoader();
+
+  const parseReceiptImage = async (base64: string, mimeType: string) => {
+    setIsParsing(true);
+    setParseError(null);
+
+    try {
+      const res = await fetch("/api/parse-receipt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: base64, mimeType }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Parse failed");
+
+      // Map suggested tag names to IDs
+      const tagIds =
+        tags
+          ?.filter((t) =>
+            data.suggestedTags?.some(
+              (name: string) =>
+                name.toLowerCase() === t.name.toLowerCase()
+            )
+          )
+          .map((t) => t.id) ?? [];
+
+      fillFromReceipt({
+        store: data.store || "",
+        date: data.date || new Date().toISOString(),
+        amount: data.amount || 0,
+        items: data.items || [],
+        tagIds,
+      });
+
+      setActiveTab("manual");
+    } catch (err) {
+      setIsParsing(false);
+      setParseError(
+        err instanceof Error ? err.message : "Failed to parse receipt"
+      );
+    }
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -34,43 +78,7 @@ export function ReceiptUpload() {
       const mimeType = file.type;
 
       setReceipt(base64, mimeType);
-      setIsParsing(true);
-
-      try {
-        const res = await fetch("/api/parse-receipt", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ image: base64, mimeType }),
-        });
-
-        if (!res.ok) throw new Error("Parse failed");
-
-        const parsed = await res.json();
-
-        // Map suggested tag names to IDs
-        const tagIds =
-          tags
-            ?.filter((t) =>
-              parsed.suggestedTags?.some(
-                (name: string) =>
-                  name.toLowerCase() === t.name.toLowerCase()
-              )
-            )
-            .map((t) => t.id) ?? [];
-
-        fillFromReceipt({
-          store: parsed.store || "",
-          date: parsed.date || new Date().toISOString(),
-          amount: parsed.amount || 0,
-          items: parsed.items || [],
-          tagIds,
-        });
-
-        setActiveTab("manual");
-      } catch {
-        setIsParsing(false);
-        alert("Failed to parse receipt. Please try again or enter manually.");
-      }
+      await parseReceiptImage(base64, mimeType);
     };
     e.target.value = "";
     reader.readAsDataURL(file);
@@ -94,7 +102,7 @@ export function ReceiptUpload() {
         onChange={handleFileChange}
       />
 
-      {!receiptBase64 && !isParsing && (
+      {!receiptBase64 && !isParsing && !parseError && (
         <div className="grid grid-cols-2 gap-3">
           <Card
             className="flex flex-col items-center justify-center gap-3 py-10 border-dashed border-2 cursor-pointer"
@@ -131,7 +139,46 @@ export function ReceiptUpload() {
         </Card>
       )}
 
-      {receiptBase64 && !isParsing && (
+      {parseError && !isParsing && (
+        <Card className="flex flex-col items-center gap-3 p-6 border-destructive/50 bg-destructive/5">
+          <svg className="h-8 w-8 text-destructive" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+          <p className="text-sm text-destructive text-center font-medium">
+            Failed to parse receipt
+          </p>
+          <p className="text-xs text-muted-foreground text-center break-all">
+            {parseError}
+          </p>
+          <div className="flex gap-2 w-full mt-1">
+            <Button
+              variant="primary"
+              size="sm"
+              className="flex-1"
+              onClick={() => {
+                if (receiptBase64 && receiptMimeType) {
+                  parseReceiptImage(receiptBase64, receiptMimeType);
+                }
+              }}
+            >
+              Retry
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              className="flex-1"
+              onClick={() => {
+                setParseError(null);
+                setActiveTab("manual");
+              }}
+            >
+              Enter Manually
+            </Button>
+          </div>
+        </Card>
+      )}
+
+      {receiptBase64 && !isParsing && !parseError && (
         <div className="space-y-3">
           <div className="relative rounded-2xl overflow-hidden border border-border">
             <img

@@ -23,8 +23,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(parsed);
   } catch (error) {
     console.error("Receipt parsing error:", error);
+    const message =
+      error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      { error: "Failed to parse receipt. Please try again or enter manually." },
+      { error: message },
       { status: 500 }
     );
   }

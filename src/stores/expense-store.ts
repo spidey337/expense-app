@@ -16,6 +16,7 @@ interface ExpenseFormState {
   receiptBase64: string | null;
   receiptMimeType: string | null;
   isParsing: boolean;
+  parseError: string | null;
 }
 
 interface ExpenseStoreState extends ExpenseFormState {
@@ -35,6 +36,7 @@ interface ExpenseStoreState extends ExpenseFormState {
   updateItem: (index: number, field: "name" | "amount", value: string) => void;
   setReceipt: (base64: string | null, mimeType: string | null) => void;
   setIsParsing: (isParsing: boolean) => void;
+  setParseError: (error: string | null) => void;
   fillFromReceipt: (data: {
     store: string;
     date: string;
@@ -58,6 +60,7 @@ const initialFormState: ExpenseFormState = {
   receiptBase64: null,
   receiptMimeType: null,
   isParsing: false,
+  parseError: null,
 };
 
 export const useExpenseStore = create<ExpenseStoreState>((set) => ({
@@ -103,8 +106,11 @@ export const useExpenseStore = create<ExpenseStoreState>((set) => ({
 
   setIsParsing: (isParsing) => set({ isParsing }),
 
+  setParseError: (error) => set({ parseError: error }),
+
   fillFromReceipt: (data) =>
     set({
+      parseError: null,
       store: data.store,
       date: data.date.slice(0, 16),
       amount: data.amount.toFixed(2),
@@ -116,7 +122,7 @@ export const useExpenseStore = create<ExpenseStoreState>((set) => ({
       isParsing: false,
     }),
 
-  resetForm: () => set({ ...initialFormState, date: new Date().toISOString().slice(0, 16) }),
+  resetForm: () => set({ ...initialFormState, parseError: null, date: new Date().toISOString().slice(0, 16) }),
 
   toggleFilterTag: (tagId) =>
     set((state) => ({
