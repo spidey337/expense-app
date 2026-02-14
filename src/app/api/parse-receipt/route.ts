@@ -23,8 +23,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(parsed);
   } catch (error) {
     console.error("Receipt parsing error:", error);
-    const message =
-      error instanceof Error ? error.message : String(error);
+    let message: string;
+    if (error instanceof Error) {
+      message = typeof error.message === "string" ? error.message : JSON.stringify(error.message);
+    } else {
+      message = typeof error === "string" ? error : JSON.stringify(error);
+    }
     return NextResponse.json(
       { error: message },
       { status: 500 }
