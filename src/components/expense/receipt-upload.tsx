@@ -8,6 +8,33 @@ import { useExpenseStore } from "@/stores/expense-store";
 import { useTags } from "@/hooks/use-tags";
 import { useWittyLoader } from "@/hooks/use-witty-loader";
 
+function compressImage(file: File, maxDim = 1280, quality = 0.7): Promise<{ base64: string; mimeType: string }> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      if (width > maxDim || height > maxDim) {
+        const scale = maxDim / Math.max(width, height);
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return reject(new Error("Canvas not supported"));
+      ctx.drawImage(img, 0, 0, width, height);
+      const dataUrl = canvas.toDataURL("image/jpeg", quality);
+      resolve({
+        base64: dataUrl.split(",")[1],
+        mimeType: "image/jpeg",
+      });
+    };
+    img.onerror = () => reject(new Error("Failed to load image"));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
 export function ReceiptUpload() {
   const inputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
@@ -76,18 +103,15 @@ export function ReceiptUpload() {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    e.target.value = "";
 
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const result = reader.result as string;
-      const base64 = result.split(",")[1];
-      const mimeType = file.type;
-
+    try {
+      const { base64, mimeType } = await compressImage(file);
       setReceipt(base64, mimeType);
       await parseReceiptImage(base64, mimeType);
-    };
-    e.target.value = "";
-    reader.readAsDataURL(file);
+    } catch {
+      setParseError("Failed to process image");
+    }
   };
 
   return (
