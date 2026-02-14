@@ -36,13 +36,14 @@ export function ReceiptUpload() {
         body: JSON.stringify({ image: base64, mimeType }),
       });
 
+      const text = await res.text();
       let data;
       try {
-        data = await res.json();
+        data = JSON.parse(text);
       } catch {
-        throw new Error(`Server error (${res.status})`);
+        throw new Error(text || `Server error (${res.status})`);
       }
-      if (!res.ok) throw new Error(data.error || `Parse failed (${res.status})`);
+      if (!res.ok) throw new Error(data.error || text || `Parse failed (${res.status})`);
 
       // Map suggested tag names to IDs
       const tagIds =
